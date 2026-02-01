@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corporate Credit Card Report - Workday</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .workday-nav {
+            background-color: #0e69b4;
+            color: white;
+            padding: 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .nav-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .nav-logo svg {
+            height: 32px;
+            width: auto;
+        }
+        
+        .nav-search {
+            flex: 1;
+            max-width: 500px;
+            margin: 0 40px;
+        }
+        
+        .nav-search input {
+            width: 100%;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: rgba(255,255,255,0.2);
+            color: white;
+        }
+        
+        .nav-search input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .nav-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        
+        .nav-profile-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 0;
+            padding: 0 30px;
+        }
+        
+        .nav-menu-item {
+            padding: 12px 20px;
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            font-size: 14px;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .nav-menu-item:hover {
+            background-color: rgba(255,255,255,0.1);
+            border-bottom-color: rgba(255,255,255,0.5);
+        }
+        
+        .nav-menu-item.active {
+            border-bottom-color: white;
+            font-weight: 600;
+        }
+        
+        .content-wrapper {
+            padding: 20px;
+        }
+        
+        .workday-header {
+            background-color: white;
+            color: #333;
+            padding: 25px 30px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-content h1 {
+            font-size: 28px;
+            font-weight: 400;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        
+        .header-content .subtitle {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-button {
+            padding: 10px 20px;
+            border: 1px solid #d0d0d0;
+            background-color: white;
+            color: #333;
+            font-size: 13px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        
+        .action-button:hover {
+            background-color: #f5f5f5;
+            border-color: #0e69b4;
+        }
+        
+        .action-button.primary {
+            background-color: #0e69b4;
+            color: white;
+            border-color: #0e69b4;
+        }
+        
+        .action-button.primary:hover {
+            background-color: #0c5a9a;
+        }
+        
+        .action-button svg {
+            width: 16px;
+            height: 16px;
+        }
+        
+        .demo-banner {
+            background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%);
+            color: white;
+            padding: 12px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .demo-banner-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .demo-banner-icon {
+            font-size: 20px;
+        }
+        
+        .demo-banner-close {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .demo-banner-close:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .demo-banner.hidden {
+            display: none;
+        }
+        
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 80px;
+            font-weight: bold;
+            color: rgba(255, 152, 0, 0.08);
+            pointer-events: none;
+            white-space: nowrap;
+            z-index: 1;
+            user-select: none;
+        }
+        
+        .report-container {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .report-container {
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        .report-meta {
+            padding: 20px 30px;
+            background-color: #fafafa;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .report-meta-item {
+            display: inline-block;
+            margin-right: 30px;
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .report-meta-item strong {
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            padding: 20px 30px 30px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        
+        thead {
+            background-color: #f8f8f8;
+            border-top: 2px solid #0e69b4;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        th {
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            white-space: nowrap;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            color: #444;
+        }
+        
+        tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .balance-positive {
+            color: #d32f2f;
+            font-weight: 600;
+        }
+        
+        .balance-negative {
+            color: #388e3c;
+        }
+        
+        .total-row {
+            background-color: #f5f5f5;
+            font-weight: 600;
+            border-top: 2px solid #0e69b4;
+        }
+        
+        .total-row td {
+            padding: 15px;
+            color: #333;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: #999;
+            font-size: 12px;
+        }
+        
+        @media print {
+            .demo-banner,
+            .watermark,
+            .nav-search,
+            .nav-profile,
+            .nav-menu,
+            .header-actions {
+                display: none !important;
+            }
+            
+            body {
+                background-color: white;
+            }
+            
+            .workday-nav {
+                background-color: white;
+                box-shadow: none;
+                border-bottom: 2px solid #0e69b4;
+            }
+            
+            .nav-top {
+                padding: 10px 20px;
+                border-bottom: none;
+            }
+            
+            .content-wrapper {
+                padding: 0;
+            }
+            
+            .workday-header {
+                box-shadow: none;
+                page-break-after: avoid;
+            }
+            
+            .report-container {
+                box-shadow: none;
+            }
+            
+            table {
+                page-break-inside: auto;
+            }
+            
+            tr {
+                page-break-inside: avoid;
+                page-break-after: auto;
+            }
+            
+            thead {
+                display: table-header-group;
+            }
+            
+            .footer {
+                page-break-before: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        async function exportToExcel() {
+            // Get table data
+            const table = document.querySelector('table');
+            const rows = table.querySelectorAll('tr');
+            
+            // Create CSV content
+            let csvContent = '';
+            
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('th, td');
+                const rowData = [];
+                
+                cells.forEach(cell => {
+                    // Clean the cell content
+                    let cellText = cell.textContent.trim();
+                    // Remove extra whitespace and newlines
+                    cellText = cellText.replace(/\s+/g, ' ');
+                    // Escape quotes and wrap in quotes if contains comma
+                    if (cellText.includes(',') || cellText.includes('"') || cellText.includes('\n')) {
+                        cellText = '"' + cellText.replace(/"/g, '""') + '"';
+                    }
+                    rowData.push(cellText);
+                });
+                
+                csvContent += rowData.join(',') + '\n';
+            });
+            
+            // Check if File System Access API is supported
+            if ('showSaveFilePicker' in window) {
+                try {
+                    const fileHandle = await window.showSaveFilePicker({
+                        suggestedName: 'Corporate_Credit_Card_Report_' + new Date().toISOString().split('T')[0] + '.csv',
+                        types: [{
+                            description: 'CSV Files',
+                            accept: {'text/csv': ['.csv']},
+                        }],
+                    });
+                    
+                    const writable = await fileHandle.createWritable();
+                    await writable.write(csvContent);
+                    await writable.close();
+                } catch (err) {
+                    // User cancelled or error occurred
+                    if (err.name !== 'AbortError') {
+                        console.error('Error saving file:', err);
+                        alert('Error saving file. Please try again.');
+                    }
+                }
+            } else {
+                // Fallback for browsers that don't support File System Access API
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                
+                link.setAttribute('href', url);
+                link.setAttribute('download', 'Corporate_Credit_Card_Report_' + new Date().toISOString().split('T')[0] + '.csv');
+                link.style.visibility = 'hidden';
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+    </script>
+    <div class="demo-banner" id="demoBanner">
+        <div class="demo-banner-content">
+            <span class="demo-banner-icon">⚠️</span>
+            <span><strong>DEMO ENVIRONMENT</strong> - This report contains sample data for demonstration purposes only. Not for production use.</span>
+        </div>
+        <button class="demo-banner-close" onclick="document.getElementById('demoBanner').classList.add('hidden')" title="Hide banner">×</button>
+    </div>
+    
+    <div class="watermark">DEMO DATA</div>
+    
+    <div class="workday-nav">
+        <div class="nav-top">
+            <div class="nav-logo">
+                <svg viewBox="0 0 200 50" xmlns="http://www.w3.org/2000/svg">
+                    <text x="100" y="28" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="white" text-anchor="middle">WORKDAY</text>
+                    <path d="M 50 35 Q 100 45 150 35" stroke="#EB7424" stroke-width="3" fill="none" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <div class="nav-search">
+                <input type="text" placeholder="Search Workday">
+            </div>
+            <div class="nav-profile">
+                <div class="nav-profile-icon">HR</div>
+                <span>HR Admin</span>
+            </div>
+        </div>
+        <div class="nav-menu">
+            <a href="#" class="nav-menu-item">Home</a>
+            <a href="#" class="nav-menu-item">Pay</a>
+            <a href="#" class="nav-menu-item">Time</a>
+            <a href="#" class="nav-menu-item">Benefits</a>
+            <a href="#" class="nav-menu-item active">Reports</a>
+            <a href="#" class="nav-menu-item">Learning</a>
+            <a href="#" class="nav-menu-item">Team</a>
+        </div>
+    </div>
+    
+    <div class="content-wrapper">
+        <div class="workday-header">
+            <div class="header-content">
+                <h1>Corporate Credit Card Summary Report</h1>
+                <div class="subtitle">Finance & HR Executive Report</div>
+            </div>
+            <div class="header-actions">
+                <button class="action-button" onclick="window.print()">
+                    <svg fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/>
+                    </svg>
+                    Print
+                </button>
+                <button class="action-button">
+                    <svg fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
+                    </svg>
+                    Share
+                </button>
+                <button class="action-button primary" onclick="exportToExcel()">
+                    <svg fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2z"/>
+                    </svg>
+                    Export to CSV
+                </button>
+                <button class="action-button">
+                    <svg fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z"/>
+                    </svg>
+                    Schedule
+                </button>
+            </div>
+        </div>
+    
+    <div class="report-container">
+        <div class="report-meta">
+            <div class="report-meta-item">
+                <strong>Report Date:</strong> January 30, 2026
+            </div>
+            <div class="report-meta-item">
+                <strong>Requested By:</strong> CFO Office
+            </div>
+            <div class="report-meta-item">
+                <strong>Total Cardholders:</strong> 30
+            </div>
+            <div class="report-meta-item">
+                <strong>Status:</strong> Active Cards
+            </div>
+            <div class="report-meta-item" style="color: #ff9800; font-weight: 600;">
+                <strong>⚠️ DEMO DATA:</strong> Sample information only
+            </div>
+        </div>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>SSN</th>
+                        <th>Credit Card Number</th>
+                        <th>Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Robert</td>
+                        <td>Aragon</td>
+                        <td>489-36-8350</td>
+                        <td>4929-3813-3266-4295</td>
+                        <td class="balance-positive">$2,847.32</td>
+                    </tr>
+                    <tr>
+                        <td>Ashley</td>
+                        <td>Borden</td>
+                        <td>514-14-8905</td>
+                        <td>5370-4638-8881-3020</td>
+                        <td class="balance-positive">$1,523.89</td>
+                    </tr>
+                    <tr>
+                        <td>Thomas</td>
+                        <td>Conley</td>
+                        <td>690-05-5315</td>
+                        <td>4916-4811-5814-8111</td>
+                        <td class="balance-positive">$4,192.15</td>
+                    </tr>
+                    <tr>
+                        <td>Susan</td>
+                        <td>Davis</td>
+                        <td>421-37-1396</td>
+                        <td>4916-4034-9269-8783</td>
+                        <td class="balance-positive">$678.50</td>
+                    </tr>
+                    <tr>
+                        <td>Christopher</td>
+                        <td>Diaz</td>
+                        <td>458-02-6124</td>
+                        <td>5299-1561-5689-1938</td>
+                        <td class="balance-positive">$3,245.67</td>
+                    </tr>
+                    <tr>
+                        <td>Rick</td>
+                        <td>Edwards</td>
+                        <td>612-20-6832</td>
+                        <td>5293-8502-0071-3058</td>
+                        <td class="balance-positive">$892.44</td>
+                    </tr>
+                    <tr>
+                        <td>Victor</td>
+                        <td>Faulkner</td>
+                        <td>300-62-3266</td>
+                        <td>5548-0246-6336-5664</td>
+                        <td class="balance-positive">$5,721.38</td>
+                    </tr>
+                    <tr>
+                        <td>Lisa</td>
+                        <td>Garrison</td>
+                        <td>660-03-8360</td>
+                        <td>4539-5385-7425-5825</td>
+                        <td class="balance-positive">$1,034.22</td>
+                    </tr>
+                    <tr>
+                        <td>Marjorie</td>
+                        <td>Green</td>
+                        <td>213-46-8915</td>
+                        <td>4916-9766-5240-6147</td>
+                        <td class="balance-positive">$2,389.76</td>
+                    </tr>
+                    <tr>
+                        <td>Mark</td>
+                        <td>Hall</td>
+                        <td>449-48-3135</td>
+                        <td>4556-0072-1294-7415</td>
+                        <td class="balance-positive">$456.90</td>
+                    </tr>
+                    <tr>
+                        <td>James</td>
+                        <td>Heard</td>
+                        <td>559-81-1301</td>
+                        <td>4532-4220-6922-9909</td>
+                        <td class="balance-positive">$3,876.55</td>
+                    </tr>
+                    <tr>
+                        <td>Albert</td>
+                        <td>Iorio</td>
+                        <td>322-84-2281</td>
+                        <td>4916-6734-7572-5015</td>
+                        <td class="balance-positive">$1,267.83</td>
+                    </tr>
+                    <tr>
+                        <td>Charles</td>
+                        <td>Jackson</td>
+                        <td>646-44-9061</td>
+                        <td>5218-0144-2703-9266</td>
+                        <td class="balance-positive">$6,543.21</td>
+                    </tr>
+                    <tr>
+                        <td>Teresa</td>
+                        <td>Kaminski</td>
+                        <td>465-73-5022</td>
+                        <td>5399-0706-4128-0178</td>
+                        <td class="balance-positive">$934.12</td>
+                    </tr>
+                    <tr>
+                        <td>Tim</td>
+                        <td>Lowe</td>
+                        <td>044-34-6954</td>
+                        <td>5144-8691-2776-1108</td>
+                        <td class="balance-positive">$2,145.66</td>
+                    </tr>
+                    <tr>
+                        <td>Monte</td>
+                        <td>Mceachern</td>
+                        <td>477-36-0282</td>
+                        <td>5527-1247-5046-7780</td>
+                        <td class="balance-positive">$4,821.99</td>
+                    </tr>
+                    <tr>
+                        <td>Adriane</td>
+                        <td>Morrison</td>
+                        <td>421-90-3440</td>
+                        <td>4539-0031-3703-0728</td>
+                        <td class="balance-positive">$1,598.47</td>
+                    </tr>
+                    <tr>
+                        <td>Jerome</td>
+                        <td>Munsch</td>
+                        <td>524-02-7657</td>
+                        <td>5180-3807-3679-8221</td>
+                        <td class="balance-positive">$3,112.34</td>
+                    </tr>
+                    <tr>
+                        <td>Agnes</td>
+                        <td>Nelson</td>
+                        <td>205-52-0027</td>
+                        <td>5413-4428-0145-0036</td>
+                        <td class="balance-positive">$789.25</td>
+                    </tr>
+                    <tr>
+                        <td>Lynette</td>
+                        <td>Oyola</td>
+                        <td>587-03-2682</td>
+                        <td>4532-9929-3036-9308</td>
+                        <td class="balance-positive">$2,654.88</td>
+                    </tr>
+                    <tr>
+                        <td>Stacey</td>
+                        <td>Peacock</td>
+                        <td>687-05-8365</td>
+                        <td>5495-8602-4508-6804</td>
+                        <td class="balance-positive">$1,876.43</td>
+                    </tr>
+                    <tr>
+                        <td>Julie</td>
+                        <td>Renfro</td>
+                        <td>751-01-2327</td>
+                        <td>5325-3256-9519-6624</td>
+                        <td class="balance-positive">$4,329.71</td>
+                    </tr>
+                    <tr>
+                        <td>Danny</td>
+                        <td>Reyes</td>
+                        <td>624-84-9181</td>
+                        <td>4532-0065-1968-5602</td>
+                        <td class="balance-positive">$567.92</td>
+                    </tr>
+                    <tr>
+                        <td>Jacki</td>
+                        <td>Russell</td>
+                        <td>514-30-2668</td>
+                        <td>345389698201044</td>
+                        <td class="balance-positive">$3,487.56</td>
+                    </tr>
+                    <tr>
+                        <td>Thomas</td>
+                        <td>Santos</td>
+                        <td>451-80-3526</td>
+                        <td>4716-6984-4983-6160</td>
+                        <td class="balance-positive">$2,234.19</td>
+                    </tr>
+                    <tr>
+                        <td>Mireille</td>
+                        <td>Townsend</td>
+                        <td>404-12-2154</td>
+                        <td>4539-8219-0484-7598</td>
+                        <td class="balance-positive">$5,178.82</td>
+                    </tr>
+                    <tr>
+                        <td>Lillian</td>
+                        <td>Venson</td>
+                        <td>505-88-5714</td>
+                        <td>30204861594838</td>
+                        <td class="balance-positive">$1,423.67</td>
+                    </tr>
+                    <tr>
+                        <td>Gail</td>
+                        <td>Watson</td>
+                        <td>461-97-5660</td>
+                        <td>4532-1753-6071-1112</td>
+                        <td class="balance-positive">$3,945.28</td>
+                    </tr>
+                    <tr>
+                        <td>Johnson</td>
+                        <td>White</td>
+                        <td>172-32-1176</td>
+                        <td>5270-4267-6450-5516</td>
+                        <td class="balance-positive">$2,098.55</td>
+                    </tr>
+                    <tr>
+                        <td>Rebecca</td>
+                        <td>Zwick</td>
+                        <td>151-32-2558</td>
+                        <td>5252-5971-4219-4116</td>
+                        <td class="balance-positive">$1,756.33</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="4" style="text-align: right;">TOTAL OUTSTANDING BALANCE:</td>
+                        <td>$78,429.78</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p style="color: #ff9800; font-weight: 600; margin-bottom: 10px;">⚠️ DEMO ENVIRONMENT - SAMPLE DATA ONLY</p>
+        <p>This report contains fictitious data for demonstration and training purposes only.</p>
+        <p>All employee names, SSNs, credit card numbers, and balances are simulated. Not for production use.</p>
+        <p style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e0e0e0;">Workday | Confidential Report | Generated from HR & Finance Systems</p>
+    </div>
+    </div>
+</body>
+</html>
